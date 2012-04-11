@@ -10,13 +10,28 @@ module Rack
       self.class.cache
     end
 
+    def queue
+      self.class.queue
+    end
+
     def self.cache
-      @cache ||= defined?(::Dalli) ? ::Dalli::Client.new : nil
+      return @cache if defined? @cache
+      @cache = ::Dalli::Client.new if defined?(::Dalli)
+    end
+
+    def self.queue
+      (defined?(@queue) && @queue) || (defined?(QC) && QC)
+    end
+
+    class << self
+      attr_writer :queue
+      attr_writer :cache
     end
 
     def call(env)
       # so when worker calls app we don't return 204
-      return @app.call(env) if env['rack.worker_qc']
+      # or if there is no cache just pass the request through
+      return @app.call(env) if env['rack.worker_qc'] || !cache
 
       if env['REQUEST_METHOD'] == 'GET'
         key = key(env)
@@ -25,7 +40,7 @@ module Rack
         else
           unless cache.get("env-#{key}")
             cache.set("env-#{key}", env.to_json)
-            QC.enqueue("#{self.class.name}.process_request", 
+            queue.enqueue("#{self.class.name}.process_request", 
                        @app.class.name, key)
           end
           [202, {"Content-type" => "text/plain"}, []]
