@@ -28,7 +28,7 @@ module Rack
             QC.enqueue("#{self.class.name}.process_request", 
                        @app.class.name, key)
           end
-          [204, {"Content-type" => "text/plain"}, []]
+          [202, {"Content-type" => "text/plain"}, []]
         end
       end
     end
@@ -59,4 +59,3 @@ module Rack
     end
   end
 end
-
