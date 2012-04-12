@@ -1,5 +1,7 @@
 # Rack::Worker
 
+[![Build Status](https://secure.travis-ci.org/[YOUR_GITHUB_USERNAME]/[YOUR_PROJECT_NAME].png)](http://travis-ci.org/[csquared]/[rack-worker])
+
   Rack middleware that implements the Worker Pattern.
 
   It processes GET requests with a worker backend and only serves them straight from a cache.  
