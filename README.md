@@ -18,9 +18,31 @@ Or install it yourself as:
 
     $ gem install rack-worker
 
+## Configuration
+
+```ruby
+  Rack::Worker.cache = Dalli::Client.new(nil, {:expires_in => 300})
+```
+The `cache` can be anything that responds to `get(key)` and `set(key, string)`.
+
+```ruby
+  Rack::Worker.queue = QC
+```
+The `queue` can be anything that responds to `enqueue(method, \*params)` 
+
+
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+class  App < Sinatra::Base
+  use Rack::Worker
+end
+```
+
+That's it!
+
+If you already have `queue\_classic` and `dalli` installed, everything will *just work*.
+However, see the example above for setting an expiry time on records.
 
 ## Contributing
 
