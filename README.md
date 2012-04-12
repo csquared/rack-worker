@@ -33,7 +33,7 @@ end
 ```
 
 That's it! Now GETs to `/long_ass_request` will be processed in the background and only
-serve HTTP 202 responses until it is processed, after which it will serve whatever your
+serve HTTP 202 responses until they are processed, after which they will return whatever your
 app would have returned.
 
 If you already have `queue_classic` and `dalli` installed, everything will *just work*.
