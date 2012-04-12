@@ -11,4 +11,7 @@ class Rack::Worker::TestCase < Test::Unit::TestCase
     super
     WebMock.reset!
   end
+  def default_test
+    #fu test::unit
+  end
 end
