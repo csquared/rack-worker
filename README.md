@@ -1,6 +1,6 @@
 # Rack::Worker
 
-  Rack middleware that implements the Worker Pattern.
+  Rack middleware that implements the [Worker Patter](https://ryandotsmith.heroku.com/worker-pattern).
 
   It processes GET requests with a worker backend and only serves them straight from a cache.  
   While processing the request it serves empty HTTP 202 responses.
