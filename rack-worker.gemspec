@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "rack-worker"
   gem.require_paths = ["lib"]
   gem.version       = Rack::Worker::VERSION
+
+  gem.add_dependency 'json'
 end

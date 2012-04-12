@@ -1,4 +1,5 @@
 require 'rack/worker/version'
+require 'json'
 
 module Rack
   class Worker
@@ -40,8 +41,7 @@ module Rack
         else
           unless cache.get("env-#{key}")
             cache.set("env-#{key}", env.to_json)
-            queue.enqueue("#{self.class.name}.process_request", 
-                       @app.class.name, key)
+            queue.enqueue("#{self.class.name}.process_request", @app.name, key)
           end
           [202, {"Content-type" => "text/plain"}, []]
         end
@@ -51,7 +51,7 @@ module Rack
     def self.process_request(classname, id)
       env = cache.get("env-#{id}")
       return unless env
-      env = Yajl::Parser.parse(env)
+      env = JSON.parse(env)
       app = classname_to_class(classname) 
       status, headers, body = app.call(env.merge('rack.worker_qc' => true))
       set_response(id, status, headers, body)
@@ -68,11 +68,11 @@ module Rack
     def get_response(key)
       response = cache.get("response-#{key}") 
       return unless response
-      Yajl::Parser.parse(response)
+      JSON.parse(response)
     end
 
     def key(env)
-      env['REQUEST_PATH'] + '?' + env['QUERY_STRING']
+      (env['REQUEST_PATH'] || env['PATH_INFO']) + '?' + env['QUERY_STRING']
     end
   end
 end
