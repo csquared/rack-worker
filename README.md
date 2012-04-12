@@ -6,6 +6,21 @@
   While processing the request it serves empty HTTP 202 responses.
   Your web frontend is never blocked processing the request.
 
+
+## How it works
+
+  When GET requests hit your app, the middleware tries to serve them from the cache.
+
+  If the request is not found, it stores the environment data in the cache.  A worker
+  process will then use the `App.call(env)` convention from Rack to run the request through
+  your webapp in the background as if it were a normal Rack request.  The status, headers,
+  and body are then stored in the cache so they can be served.  
+
+  What makes this technique different from a standard HTTP caching approach is that your
+  web server never processes the long HTTP request.  The middleware will return empty 
+  HTTP 202 responses unless the response is found in the cache.  Every request that generates
+  a 202 will only queue one background job per URL.
+
 ## Installation
 
 Add this line to your application's Gemfile:
