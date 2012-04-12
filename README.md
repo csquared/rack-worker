@@ -1,6 +1,8 @@
 # Rack::Worker
 
-TODO: Write a gem description
+  Rack middleware that implements the Worker Pattern
+  Processes GET requests with a worker backend and only serves them straight from a cache.  
+  Your web frontend is never blocked processing the request.
 
 ## Installation
 
