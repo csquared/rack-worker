@@ -91,3 +91,20 @@ class SinatraTest < Rack::Worker::TestCase
     end
   end
 end
+
+class SinatraUseTest < Rack::Worker::TestCase 
+  include QueueTest
+
+  class TestClassApp < Sinatra::Base
+    use Rack::Worker
+
+    get '*' do
+      headers 'Content-Type' => 'text/test'
+      'Hello, world'
+    end
+  end
+
+  def app
+    TestClassApp
+  end
+end

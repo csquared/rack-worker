@@ -41,7 +41,8 @@ module Rack
         else
           unless cache.get("env-#{key}")
             cache.set("env-#{key}", env.to_json)
-            queue.enqueue("#{self.class.name}.process_request", @app.name, key)
+            name = @app.is_a?(Class) ? @app.name : @app.class.name
+            queue.enqueue("#{self.class.name}.process_request", name, key)
           end
           [202, {"Content-type" => "text/plain"}, []]
         end
