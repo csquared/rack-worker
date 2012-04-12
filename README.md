@@ -1,7 +1,9 @@
 # Rack::Worker
 
-  Rack middleware that implements the Worker Pattern
-  Processes GET requests with a worker backend and only serves them straight from a cache.  
+  Rack middleware that implements the Worker Pattern.
+
+  It processes GET requests with a worker backend and only serves them straight from a cache.  
+  While processing the request it serves empty HTTP 202 responses.
   Your web frontend is never blocked processing the request.
 
 ## Installation
