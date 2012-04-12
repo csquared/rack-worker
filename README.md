@@ -20,19 +20,6 @@ Or install it yourself as:
 
     $ gem install rack-worker
 
-## Configuration
-
-```ruby
-  Rack::Worker.cache = Dalli::Client.new(nil, {:expires_in => 300})
-```
-The `cache` can be anything that responds to `get(key)` and `set(key, string)`
-
-```ruby
-  Rack::Worker.queue = QC
-```
-The `queue` can be anything that responds to `enqueue(method, *params)` 
-
-
 ## Usage
 
 ```ruby
@@ -50,7 +37,21 @@ serve HTTP 202 responses until it is processed, after which it will serve whatev
 app would have returned.
 
 If you already have `queue_classic` and `dalli` installed, everything will *just work*.
-However, see the example above for setting an expiry time on records.
+
+See configuration for setting an expiry time on records.
+
+## Configuration
+
+```ruby
+  Rack::Worker.cache = Dalli::Client.new(nil, {:expires_in => 300})
+```
+The `cache` can be anything that responds to `get(key)` and `set(key, string)`
+
+```ruby
+  Rack::Worker.queue = QC
+```
+The `queue` can be anything that responds to `enqueue(method, *params)` 
+
 
 ## Contributing
 
