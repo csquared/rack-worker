@@ -23,12 +23,12 @@ Or install it yourself as:
 ```ruby
   Rack::Worker.cache = Dalli::Client.new(nil, {:expires_in => 300})
 ```
-The `cache` can be anything that responds to `get(key)` and `set(key, string)`.
+The `cache` can be anything that responds to `get(key)` and `set(key, string)`
 
 ```ruby
   Rack::Worker.queue = QC
 ```
-The `queue` can be anything that responds to `enqueue(method, \*params)` 
+The `queue` can be anything that responds to `enqueue(method, *params)` 
 
 
 ## Usage
@@ -41,7 +41,7 @@ end
 
 That's it!
 
-If you already have `queue\_classic` and `dalli` installed, everything will *just work*.
+If you already have `queue_classic` and `dalli` installed, everything will *just work*.
 However, see the example above for setting an expiry time on records.
 
 ## Contributing
