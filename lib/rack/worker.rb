@@ -49,7 +49,9 @@ module Rack
     end
 
     def self.process_request(classname, id)
-      env = Yajl::Parser.parse(cache.get("env-#{id}"))
+      env = cache.get("env-#{id}")
+      return unless env
+      env = Yajl::Parser.parse(env)
       app = classname_to_class(classname) 
       status, headers, body = app.call(env.merge('rack.worker_qc' => true))
       set_response(id, status, headers, body)
