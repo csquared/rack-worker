@@ -69,6 +69,30 @@ The `cache` can be anything that responds to `get(key)` and `set(key, string)`
 ```
 The `queue` can be anything that responds to `enqueue(method, *params)` 
 
+## Clients
+
+Here's an example of a polling GET request in javascript using jQuery:
+
+```javascript
+Lib.get = function(path, params, callback) {
+  var success_callback = function(data, textStatus, xhr){
+    if(xhr.status == 202){
+      setTimeout(function() {
+        return Lib.get(path, params, callback)  
+      }, 500)
+    }else{
+      return callback(data)
+    }
+  }
+
+  $.ajax({
+    url: path, 
+    success: success_callback,
+    'data': params,
+    dataType: 'json' 
+  })
+}
+```
 
 ## Contributing
 
