@@ -40,7 +40,7 @@ module Rack
           response
         else
           unless cache.get("env-#{key}")
-            cache.set("env-#{key}", env.to_json)
+            cache.add("env-#{key}", env.to_json)
             name = @app.is_a?(Class) ? @app.name : @app.class.name
             queue.enqueue("#{self.class.name}.process_request", name, key)
           end
@@ -63,7 +63,7 @@ module Rack
     end
 
     def self.set_response(key, status, headers, body)
-      cache.set("response-#{key}", [status, headers, body].to_json)
+      cache.add("response-#{key}", [status, headers, body].to_json)
     end
 
     def get_response(key)

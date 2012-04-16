@@ -6,8 +6,8 @@ module QueueTest
     mock(Rack::Worker.cache).get('response-/foo?') { false }
     mock(Rack::Worker.cache).get('env-/foo?') { false }
     mock(Rack::Worker.cache).get('env-/foo?') { {'rack.input' => []}.to_json }
-    mock(Rack::Worker.cache).set('env-/foo?', is_a(String))
-    mock(Rack::Worker.cache).set('response-/foo?', is_a(String))
+    mock(Rack::Worker.cache).add('env-/foo?', is_a(String))
+    mock(Rack::Worker.cache).add('response-/foo?', is_a(String))
 
     mock_queue = Object.new
     def mock_queue.enqueue(function_call, *args)
@@ -39,7 +39,7 @@ class WorkerTest < Rack::Worker::TestCase
     Rack::Worker.cache = Object.new
     mock(Rack::Worker.cache).get('response-/foo?') { false }
     mock(Rack::Worker.cache).get('env-/foo?')      { false }
-    stub(Rack::Worker.cache).set
+    stub(Rack::Worker.cache).add
 
     Rack::Worker.queue = Object.new
     mock(Rack::Worker.queue).enqueue('Rack::Worker.process_request', is_a(String), '/foo?')
