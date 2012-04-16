@@ -2,7 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/csquared/rack-worker.png)](http://travis-ci.org/csquared/rack-worker)
 
-  Rack middleware that implements the Worker Pattern.
+  Rack middleware that implements the [Worker Pattern](https://ryandotsmith.heroku.com/worker-pattern).
 
   It processes GET requests with a worker backend and only serves them straight from a cache.  
   While processing the request it serves empty HTTP 202 responses.
