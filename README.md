@@ -62,7 +62,7 @@ See configuration for setting an expiry time on records.
 ```ruby
   Rack::Worker.cache = Dalli::Client.new(nil, {:expires_in => 300})
 ```
-The `cache` can be anything that responds to `get(key)` and `set(key, string)`
+The `cache` can be anything that responds to `get(key)` and `add(key, string)`
 
 ```ruby
   Rack::Worker.queue = QC
