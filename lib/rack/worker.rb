@@ -1,4 +1,5 @@
 require 'rack/worker/version'
+require 'rack/worker/postgres_cache'
 require 'json'
 
 module Rack
@@ -15,18 +16,46 @@ module Rack
       self.class.queue
     end
 
+    def db
+      self.class.db
+    end
+
     def self.cache
       return @cache if defined? @cache
-      @cache = ::Dalli::Client.new if defined?(::Dalli)
+      @cache = PostgresCache.new(db_url, url_table_name, nil)
     end
 
     def self.queue
       (defined?(@queue) && @queue) || (defined?(QC) && QC)
     end
 
+    def self.db
+      return @db if defined? @db
+      @db = ::Sequel.connect(db_url)
+    end
+
+    def self.db_url
+      @db_url || ENV['RACK_WORKER_DATABASE_URL'] || ENV['DATABASE_URL']
+    end
+
     class << self
       attr_writer :queue
       attr_writer :cache
+      attr_writer :db
+      attr_writer :db_url
+    end
+
+    def self.url_table_name
+      ENV['RACK_WORKER_URL_TABLE'] || :rack_worker_cache
+    end
+
+    # Given a string that starts with a slash, 
+    #   anchor it to the beginning of the string
+    #   allow * within url
+    # Given a hash as the second argument, 
+    #   filter urls with those GET params
+    def self.expire(url, get_params = {})
+
     end
 
     def call(env)
