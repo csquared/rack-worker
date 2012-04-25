@@ -3,11 +3,12 @@ require 'test_helper'
 class PostgresCacheTest < Rack::Worker::TestCase
 
   def setup
-    raise "Need to define TEST_DATABASE_URL" unless ENV['TEST_DATABASE_URL']
+    skip("Need to define TEST_DATABASE_URL") unless ENV['TEST_DATABASE_URL']
     @cache = Rack::Worker::PostgresCache.new(ENV['TEST_DATABASE_URL'], :cache)
   end
 
   def teardown
+    skip("Need to define TEST_DATABASE_URL") unless ENV['TEST_DATABASE_URL']
     @cache.db << "DROP TABLE cache;"
   end
 

@@ -6,7 +6,13 @@ class ExpireTest < Rack::Worker::TestCase
     ContainedSinatraApp
   end
 
+  def setup
+    skip("Need to define RACK_WORKER_DATABASE_URL") unless ENV['RACK_WORKER_DATABASE_URL']
+    super
+  end
+
   def teardown 
+    skip("Need to define RACK_WORKER_DATABASE_URL") unless ENV['RACK_WORKER_DATABASE_URL']
     Rack::Worker.db[Rack::Worker.cache_table_name].where("key like '%foo%'").delete 
   end
 
