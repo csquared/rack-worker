@@ -22,7 +22,7 @@ module Rack
 
     def self.cache
       return @cache if defined? @cache
-      @cache = PostgresCache.new(db_url, cache_table_name, nil)
+      @cache = PostgresCache.new(db_url, cache_table_name, nil) if @db_url
     end
 
     def self.queue
