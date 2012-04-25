@@ -22,7 +22,7 @@ module Rack
 
     def self.cache
       return @cache if defined? @cache
-      @cache = PostgresCache.new(db_url, url_table_name, nil)
+      @cache = PostgresCache.new(db_url, cache_table_name, nil)
     end
 
     def self.queue
@@ -45,8 +45,8 @@ module Rack
       attr_writer :db_url
     end
 
-    def self.url_table_name
-      ENV['RACK_WORKER_URL_TABLE'] || :rack_worker_cache
+    def self.cache_table_name
+      ENV['RACK_WORKER_CACHE_TABLE'] || :rack_worker_cache
     end
 
     # Given a string that starts with a slash, 
@@ -55,7 +55,16 @@ module Rack
     # Given a hash as the second argument, 
     #   filter urls with those GET params
     def self.expire(url, get_params = {})
+      raise "Expire only works with PosgresCache" unless cache.is_a? PostgresCache
+      self.find(url, get_params).update(:expires_on => Time.now)
+    end
 
+    def self.find(url, get_params)
+      data = cache.db[cache_table_name].filter(:key => /\A(response|env)-#{Regexp.escape(url)}\?/)
+      (get_params || []).each do |key, value|
+        data = data.filter("key like '%#{key}=#{value}%'")
+      end
+      data
     end
 
     def call(env)

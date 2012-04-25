@@ -22,16 +22,11 @@ end
 
 class WorkerTest < Rack::Worker::TestCase
   include QueueTest
-  class TestClassApp
-    def self.call(env)
-      [200, {"Content-Type" => "text/test"}, ['Hello, world']]
-    end
-  end
 
   def app
     Rack::Builder.new do
       use Rack::Worker
-      run TestClassApp
+      run RackApp
     end
   end
 
@@ -71,23 +66,15 @@ class WorkerTest < Rack::Worker::TestCase
     assert_equal 'application/json', last_response.headers['Content-Type']
     assert_equal json, last_response.body
   end
-
 end
 
 class SinatraTest < Rack::Worker::TestCase 
   include QueueTest
 
-  class TestClassApp < Sinatra::Base
-    get '*' do
-      headers 'Content-Type' => 'text/test'
-      'Hello, world'
-    end
-  end
-
   def app
     Rack::Builder.new do
       use Rack::Worker
-      run TestClassApp
+      run TestSinatraApp
     end
   end
 end
@@ -95,16 +82,7 @@ end
 class SinatraUseTest < Rack::Worker::TestCase 
   include QueueTest
 
-  class TestClassApp < Sinatra::Base
-    use Rack::Worker
-
-    get '*' do
-      headers 'Content-Type' => 'text/test'
-      'Hello, world'
-    end
-  end
-
   def app
-    TestClassApp
+    ContainedSinatraApp
   end
 end
