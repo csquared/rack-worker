@@ -92,7 +92,7 @@ module Rack
       return unless env
       env = JSON.parse(env)
       app = classname_to_class(classname)
-      status, headers, body = app.call(env.merge('rack.worker_qc' => true))
+      status, headers, body = app.new.call(env.merge('rack.worker_qc' => true))
       set_response(id, status, headers, body)
     end
 

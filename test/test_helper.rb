@@ -44,7 +44,7 @@ class TestSinatraApp < Sinatra::Base
 end
 
 class RackApp
-  def self.call(env)
+  def call(env)
     [200, {"Content-Type" => "text/test"}, ['Hello, world']]
   end
 end
