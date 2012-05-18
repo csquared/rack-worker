@@ -11,9 +11,10 @@ class ExpireTest < Rack::Worker::TestCase
     super
   end
 
-  def teardown 
+  def teardown
     skip("Need to define RACK_WORKER_DATABASE_URL") unless ENV['RACK_WORKER_DATABASE_URL']
-    Rack::Worker.db[Rack::Worker.cache_table_name].where("key like '%foo%'").delete 
+    Rack::Worker.db[Rack::Worker.cache_table_name].where("key like '%foo%'").delete
+    super
   end
 
   def visit(url)
@@ -56,25 +57,25 @@ class ExpireTest < Rack::Worker::TestCase
   end
 
   def test_expire_with_1_matching_param
-    assert_expires_url '/foo?query=param&query2=param2&query3=param3' do 
+    assert_expires_url '/foo?query=param&query2=param2&query3=param3' do
       Rack::Worker.expire('/foo', :query => 'param')
     end
   end
 
   def test_expires_with_some_matching_params
-    assert_expires_url '/foo?query=param&query2=param2&query3=param3' do 
+    assert_expires_url '/foo?query=param&query2=param2&query3=param3' do
       Rack::Worker.expire('/foo', :query => 'param', :query2 => 'param2')
     end
   end
 
   def test_expires_with_all_matching_params
-    assert_expires_url '/foo?query=param&query2=param2&query3=param3' do 
+    assert_expires_url '/foo?query=param&query2=param2&query3=param3' do
       Rack::Worker.expire('/foo', :query => 'param', :query2 => 'param2', :query3 => 'param3')
     end
   end
 
   def requires_params_to_match
-    assert_doesnt_expire_url '/foo?query=param&query2=param2&query3=param3' do 
+    assert_doesnt_expire_url '/foo?query=param&query2=param2&query3=param3' do
       Rack::Worker.expire('/foo', :query => 'param2')
     end
   end
@@ -82,7 +83,6 @@ end
 
 class ExpireRaiseTest < Rack::Worker::TestCase
   def test_raises_if_wrong_cache
-    @raise_test = true
     Rack::Worker.cache = Object.new
     assert_raises RuntimeError, 'Worker::expire only works with PostgresCache' do
       Rack::Worker.expire('/foo')
