@@ -90,9 +90,13 @@ module Rack
     def self.process_request(classname, id)
       env = cache.get("env-#{id}")
       return unless env
-      env = JSON.parse(env)
+      env = JSON.parse(env).merge('rack.worker_qc' => true)
       app = classname_to_class(classname)
-      status, headers, body = app.new.call(env.merge('rack.worker_qc' => true))
+      if app.respond_to? :call
+        status, headers, body = app.call(env)
+      else
+        status, headers, body = app.new.call(env)
+      end
       set_response(id, status, headers, body)
     end
 

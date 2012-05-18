@@ -48,3 +48,9 @@ class RackApp
     [200, {"Content-Type" => "text/test"}, ['Hello, world']]
   end
 end
+
+class RackClassApp
+  def self.call(env)
+    [200, {"Content-Type" => "text/test"}, ['Hello, world']]
+  end
+end

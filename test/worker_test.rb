@@ -39,7 +39,7 @@ class WorkerTest < Rack::Worker::TestCase
     Rack::Worker.queue = Object.new
     mock(Rack::Worker.queue).enqueue('Rack::Worker.process_request', is_a(String), '/foo?')
 
-    get '/foo' 
+    get '/foo'
     assert_equal 202, last_response.status
     assert_equal '', last_response.body
   end
@@ -49,7 +49,7 @@ class WorkerTest < Rack::Worker::TestCase
     mock(Rack::Worker.cache).get('response-/foo?') { false }
     mock(Rack::Worker.cache).get('env-/foo?')      { true }
 
-    get '/foo' 
+    get '/foo'
     assert_equal 202, last_response.status
     assert_equal '', last_response.body
   end
@@ -68,7 +68,7 @@ class WorkerTest < Rack::Worker::TestCase
   end
 end
 
-class SinatraTest < Rack::Worker::TestCase 
+class SinatraTest < Rack::Worker::TestCase
   include QueueTest
 
   def app
@@ -79,10 +79,21 @@ class SinatraTest < Rack::Worker::TestCase
   end
 end
 
-class SinatraUseTest < Rack::Worker::TestCase 
+class SinatraUseTest < Rack::Worker::TestCase
   include QueueTest
 
   def app
     ContainedSinatraApp
+  end
+end
+
+class RackClassTest < Rack::Worker::TestCase
+  include QueueTest
+
+  def app
+    Rack::Builder.new do
+      use Rack::Worker
+      run RackClassApp
+    end
   end
 end
