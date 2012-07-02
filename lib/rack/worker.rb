@@ -78,20 +78,28 @@ module Rack
           response
         else
           unless cache.get("env-#{key}")
+            env = env.select do |key, value|
+              key.match(/[A-Z_]*/) || key.match(/rack.session/) || value.is_a?(String) || value.is_a?(Numeric) || value.is_a?(Hash)
+            end
             cache.add("env-#{key}", env.to_json)
-            name = @app.is_a?(Class) ? @app.name : @app.class.name
-            queue.enqueue("#{self.class.name}.process_request", name, key)
+            marshalled = false
+            if defined?(Sinatra::Base) && @app.is_a?(Sinatra::Base)
+              app_str = @app.class.name
+            else
+              app_str = Marshal.dump(@app) and marshalled = true
+            end
+            queue.enqueue("#{self.class.name}.process_request", app_str, key, marshalled)
           end
           [202, {"Content-type" => "text/plain"}, []]
         end
       end
     end
 
-    def self.process_request(classname, id)
+    def self.process_request(app_str, id, marshalled)
       env = cache.get("env-#{id}")
       return unless env
       env = JSON.parse(env).merge('rack.worker_qc' => true)
-      app = classname_to_class(classname)
+      app = marshalled ? Marshal.load(app_str) : classname_to_class(app_str)
       if app.respond_to? :call
         status, headers, body = app.call(env)
       else
