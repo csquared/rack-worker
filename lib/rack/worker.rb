@@ -78,9 +78,6 @@ module Rack
           response
         else
           unless cache.get("env-#{key}")
-            env = env.select do |key, value|
-              key.match(/[A-Z_]*/) || key.match(/rack.session/) || value.is_a?(String) || value.is_a?(Numeric) || value.is_a?(Hash)
-            end
             cache.add("env-#{key}", JSON.dump(env))
             marshalled = false
             if defined?(Sinatra::Base) && @app.is_a?(Sinatra::Base)
