@@ -81,7 +81,7 @@ module Rack
             env = env.select do |key, value|
               key.match(/[A-Z_]*/) || key.match(/rack.session/) || value.is_a?(String) || value.is_a?(Numeric) || value.is_a?(Hash)
             end
-            cache.add("env-#{key}", env.to_json)
+            cache.add("env-#{key}", JSON.dump(env))
             marshalled = false
             if defined?(Sinatra::Base) && @app.is_a?(Sinatra::Base)
               app_str = @app.class.name
@@ -113,7 +113,7 @@ module Rack
     end
 
     def self.set_response(key, status, headers, body)
-      cache.add("response-#{key}", [status, headers, body].to_json)
+      cache.add("response-#{key}", JSON.dump([status, headers, body]))
     end
 
     def get_response(key)
